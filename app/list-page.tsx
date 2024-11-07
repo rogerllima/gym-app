@@ -4,6 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 type Client = {
     id: string;
@@ -17,10 +18,17 @@ type Client = {
 const ClientList = () => {
     const [clients, setClients] = useState<Client[]>([])
 
+    const navigate = useRouter();
+
     const listClients = async () => {
         const storedClients = await AsyncStorage.getItem('clients');
         const clients = storedClients ? JSON.parse(storedClients) : [];
         setClients(clients);
+    }
+
+    const editClient = async (client: Client) => {
+        await AsyncStorage.setItem('selectedClient', JSON.stringify(client));
+        navigate.navigate('/edit-page');
     }
 
     const removeCliente = async (id: string) => {
@@ -57,7 +65,7 @@ const ClientList = () => {
             <View style={styles.containerButton}>
                 <TouchableOpacity
                     style={styles.editButton}
-                    onPress={() => handleDeleteClient(item.id)}
+                    onPress={() => editClient(item)}
                 >
                     <Ionicons name="settings" size={32} color="white" />
                 </TouchableOpacity>

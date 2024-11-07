@@ -5,7 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
-const CreateClientForm: React.FC = () => {
+const CreateClientForm = () => {
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [height, setHeight] = useState('');

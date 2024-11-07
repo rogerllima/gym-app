@@ -26,6 +26,7 @@ export default function RootLayout() {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="create-page" options={{ headerShown: false }} />
       <Stack.Screen name="list-page" options={{ headerShown: false }} />
+      <Stack.Screen name="edit-page" options={{ headerShown: false }} />
     </Stack>
   );
 }
