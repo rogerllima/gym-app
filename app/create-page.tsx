@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, Alert, Image, Dimensions } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, Alert, Image, Dimensions, KeyboardAvoidingView, Platform, ScrollView, Keyboard } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -75,59 +75,67 @@ const CreateClientForm = () => {
         source={require('@/assets/images/tipos-de-academia-1.jpeg')}
         style={styles.headerImage}
       />
-      <ThemedView style={styles.card}>
-        <View style={styles.headerContainer}>
-          <View style={styles.header}>
-            <BackButton />
-          </View>
-          <ThemedText type="title" style={styles.titleText}>Criar Cliente</ThemedText>
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Nome"
-          value={name}
-          onChangeText={setName}
-        />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Data de Nascimento (DD/MM/AAAA)"
-          keyboardType='numeric'
-          value={birthDate}
-          onChangeText={(text) => handleBirthDateChange(text)}
-          maxLength={10}
-        />
+      <KeyboardAvoidingView
+        style={{ flex: 1, height: '100%', width: '100%', marginLeft: 20 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // iOS has a specific behavior and Android needs 'height'
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+          <ThemedView style={styles.card}>
+            <View style={styles.headerContainer}>
+              <View style={styles.header}>
+                <BackButton />
+              </View>
+              <ThemedText type="title" style={styles.titleText}>Criar Cliente</ThemedText>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Nome"
+              value={name}
+              onChangeText={setName}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Altura (em cm)"
-          value={height}
-          onChangeText={(text) => setHeight(text.replace(/[^0-9]/g, ''))}
-          keyboardType="numeric"
-          maxLength={3}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Data de Nascimento (DD/MM/AAAA)"
+              keyboardType='numeric'
+              value={birthDate}
+              onChangeText={(text) => handleBirthDateChange(text)}
+              maxLength={10}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Peso (em kg)"
-          value={weight}
-          onChangeText={(text) => setWeight(text.replace(/[^0-9.]/g, ''))}
-          maxLength={5}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Altura (em cm)"
+              value={height}
+              onChangeText={(text) => setHeight(text.replace(/[^0-9]/g, ''))}
+              keyboardType="numeric"
+              maxLength={3}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Telefone"
-          value={phone}
-          onChangeText={(text) => setPhone(text.replace(/[^0-9()-\s]/g, ''))}
-          maxLength={15}
-          keyboardType="phone-pad"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Peso (em kg)"
+              value={weight}
+              onChangeText={(text) => setWeight(text.replace(/[^0-9.]/g, ''))}
+              maxLength={5}
+            />
 
-        <TouchableOpacity style={styles.button} onPress={saveClient}>
-          <ThemedText style={styles.buttonText}>Salvar Cliente</ThemedText>
-        </TouchableOpacity>
-      </ThemedView>
+            <TextInput
+              style={styles.input}
+              placeholder="Telefone"
+              value={phone}
+              onChangeText={(text) => setPhone(text.replace(/[^0-9()-\s]/g, ''))}
+              maxLength={15}
+              keyboardType="phone-pad"
+            />
+
+            <TouchableOpacity style={styles.button} onPress={saveClient}>
+              <ThemedText style={styles.buttonText}>Salvar Cliente</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 };
@@ -135,7 +143,6 @@ const CreateClientForm = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: '#e0e0e0',
     gap: 20,
   },
