@@ -3,6 +3,7 @@ import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-nat
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const HomeScreen = () => {
   const navigate = useRouter();
@@ -16,7 +17,10 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['black', 'gray']}
+      style={styles.container}
+    >
       <Image
         source={require('@/assets/images/tipos-de-academia-1.jpeg')}
         style={styles.headerImage}
@@ -33,7 +37,7 @@ const HomeScreen = () => {
           <ThemedText style={styles.buttonText}>Listar Clientes</ThemedText>
         </TouchableOpacity>
       </ThemedView>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -42,7 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: 20,
-    backgroundColor: '#f5f5f5',
   },
   card: {
     backgroundColor: '#fff',

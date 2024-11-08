@@ -4,6 +4,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import BackButton from '@/components/navigation/BackButton';
 
 const CreateClientForm = () => {
   const [name, setName] = useState('');
@@ -11,8 +14,27 @@ const CreateClientForm = () => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [phone, setPhone] = useState('');
+  const navigate = useRouter();
+
+  const handleBirthDateChange = (text: string) => {
+    let formatted = text.replace(/[^0-9]/g, '');
+
+    if (formatted.length >= 2 && formatted.length <= 4) {
+      formatted = `${formatted.slice(0, 2)}/${formatted.slice(2)}`;
+    } else if (formatted.length > 4) {
+      formatted = `${formatted.slice(0, 2)}/${formatted.slice(2, 4)}/${formatted.slice(4, 8)}`;
+    }
+
+    setBirthDate(formatted);
+  };
 
   const saveClient = async () => {
+    // Validação dos campos obrigatórios
+    if (!name || !birthDate || !height || !weight || !phone) {
+      Alert.alert('Erro', 'Todos os campos são obrigatórios!');
+      return;
+    }
+
     try {
       const newClient = {
         id: uuid.v4().toString(),
@@ -24,7 +46,6 @@ const CreateClientForm = () => {
       };
 
       const storedClients = await AsyncStorage.getItem('clients');
-
       const clients = storedClients ? JSON.parse(storedClients) : [];
       clients.push(newClient);
 
@@ -32,25 +53,35 @@ const CreateClientForm = () => {
 
       Alert.alert('Cliente Criado', `Nome: ${name}\nNascimento: ${birthDate}\nAltura: ${height}\nPeso: ${weight}\nTelefone: ${phone}`);
 
+      // Limpar campos após salvar
       setName('');
       setBirthDate('');
       setHeight('');
       setWeight('');
       setPhone('');
+
+      navigate.navigate('/list-page');
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível salvar o cliente.');
     }
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['black', 'gray']}
+      style={styles.container}
+    >
       <Image
         source={require('@/assets/images/tipos-de-academia-1.jpeg')}
         style={styles.headerImage}
       />
       <ThemedView style={styles.card}>
-        <ThemedText type="title" style={styles.titleText}>Criar Cliente</ThemedText>
-
+        <View style={styles.headerContainer}>
+          <View style={styles.header}>
+            <BackButton />
+          </View>
+          <ThemedText type="title" style={styles.titleText}>Criar Cliente</ThemedText>
+        </View>
         <TextInput
           style={styles.input}
           placeholder="Nome"
@@ -61,8 +92,9 @@ const CreateClientForm = () => {
         <TextInput
           style={styles.input}
           placeholder="Data de Nascimento (DD/MM/AAAA)"
+          keyboardType='numeric'
           value={birthDate}
-          onChangeText={(text) => setBirthDate(text.replace(/[^0-9/]/g, ''))}
+          onChangeText={(text) => handleBirthDateChange(text)}
           maxLength={10}
         />
 
@@ -96,7 +128,7 @@ const CreateClientForm = () => {
           <ThemedText style={styles.buttonText}>Salvar Cliente</ThemedText>
         </TouchableOpacity>
       </ThemedView>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -106,6 +138,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#e0e0e0',
     gap: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 90,
+    width: '100%',
+    marginBottom: 20,
   },
   card: {
     backgroundColor: '#fff',
